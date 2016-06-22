@@ -1,22 +1,8 @@
 var express = require('express');
-var btcstats = require('btc-stats');
 var http = require('http');
 var _ = require('underscore');
 
 var router = express.Router();
-
-// Just show a ticker
-router.get('/', function(req, res, next) {
-  //if this line isn't specified, it runs the avg function across all exchanges, not just these 3
-  btcstats.exchanges(["bitfinex", "bitstamp", "okcoin"]);
-
-  //Example print the average price across 3 exchanges (bitfinex, bitstamp, okcoin)
-  btcstats.avg(function(error, resp) {
-  	if (!error) {
-      res.send(`Average price ${resp.price} across bitfinex, bitstamp and okcoin.`);
-  	}
-  });
-});
 
 router.get('/bitcoin', function(req, res, next) {
   http.get({
