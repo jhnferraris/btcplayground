@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  table
+    th Date
+    th Price in (USD)
+    each data in historicalData
+      tr
+        td= data.date
+        td= data.price

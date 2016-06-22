@@ -1,6 +1,7 @@
 var express = require('express');
 var btcstats = require('btc-stats');
-  var http = require('http');
+var http = require('http');
+var _ = require('underscore');
 
 var router = express.Router();
 
@@ -20,7 +21,7 @@ router.get('/', function(req, res, next) {
 router.get('/bitcoin', function(req, res, next) {
   http.get({
     host: 'api.coindesk.com',
-    path: '/v1/bpi/currentprice.json'
+    path: '/v1/bpi/historical/close.json'
     },
     function(response) {
       // Continuously update stream with data
@@ -29,8 +30,15 @@ router.get('/bitcoin', function(req, res, next) {
       response.on('end', function() {
         // Data reception is done, do whatever with it!
         var parsed = JSON.parse(body);
-        res.send(`Current Value of 1 BTC is $ ${parsed.bpi.USD.rate}`)
-        // console.log(parsed.bpi.USD.rate);
+        var historicalData = _.map(parsed.bpi, function (value, key) {
+          return {
+            'date': key,
+            'price': value
+          }
+        });
+        historicalData.reverse()
+        // res.send(historicalData);
+        res.render('history', {historicalData});
         });
       }
 );
